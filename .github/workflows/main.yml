@@ -55,4 +55,27 @@ jobs:
 
       - name: List Files  # Optional step
         run: |
-          ls -R      
+          ls -R     
+          
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: Analyze with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.organization=2023mt03024
+          -Dsonar.projectKey=2023mt03024_pyb
+          -Dsonar.python.coverage.reportPaths=target/reports/helloworld_coverage.xml
+          -Dsonar.sources=src/main
+          -Dsonar.test.exclusions=src/unittest/**
+          -Dsonar.tests=tests/
+          -Dsonar.verbose=true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
